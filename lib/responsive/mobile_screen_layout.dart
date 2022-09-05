@@ -1,4 +1,7 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
+import 'package:social_media_app/screens/login_screen.dart';
 
 class MobileScreenLayout extends StatelessWidget {
   const MobileScreenLayout({Key? key}) : super(key: key);
@@ -6,11 +9,8 @@ class MobileScreenLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text(
-          "This is mobile screen",
-          style: TextStyle(fontSize: 30),
-        ),
+      body: SafeArea(
+        child: LoginScreen(),
       ),
     );
   }
