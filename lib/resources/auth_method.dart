@@ -38,7 +38,7 @@ class AuthMethod {
           'following': [],
           'photoUrl': photoUrl,
         });
-        result = 'successful';
+        result = 'registration successful';
       }
     } on FirebaseAuthException catch(e){
       if(e.code == 'invalid-email'){
@@ -52,6 +52,33 @@ class AuthMethod {
     }
     catch (error) {
       result = error.toString();
+    }
+    return result;
+  }
+
+  Future<String> signInUser({required email,
+    required password,}) async{
+    String result = 'some error occured';
+    try{
+      if(email.isNotEmpty ||
+          password.isNotEmpty){
+        final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: email,
+            password: password,
+        );
+        result = 'Successfully login';
+      }else{
+        result = 'Please enter all the field';
+      }
+    }on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        result = 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        result = 'Wrong password provided for that user.';
+      }
+    }
+    catch (e){
+      result = e.toString();
     }
     return result;
   }

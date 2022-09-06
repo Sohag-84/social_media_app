@@ -2,8 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:social_media_app/resources/auth_method.dart';
 import 'package:social_media_app/screens/signup_screen.dart';
 import 'package:social_media_app/utils/colors.dart';
+import 'package:social_media_app/utils/utils.dart';
 import 'package:social_media_app/widgets/text_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,6 +19,32 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  clearTextField(){
+    _emailController.clear();
+    _passwordController.clear();
+  }
+
+  void loginUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String result = await AuthMethod().signInUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+
+    if (result != 'success') {
+      Fluttertoast.showToast(msg: result);
+    }
+    else{
+      clearTextField();
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   void dispose() {
@@ -51,19 +80,23 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFieldInput(
                 textEditingController: _passwordController,
                 hintText: 'Enter your password',
-                textInputType: TextInputType.emailAddress,
+                textInputType: TextInputType.text,
                 isPassword: true,
                 textInputAction: TextInputAction.done,
               ),
               SizedBox(height: 35),
               InkWell(
-                onTap: () {},
+                onTap: loginUser,
                 child: Container(
                   width: double.infinity,
                   height: 45,
                   padding: EdgeInsets.symmetric(horizontal: 32),
                   alignment: Alignment.center,
-                  child: Text("Log in"),
+                  child: _isLoading
+                      ? Center(
+                          child: Text("Please wait..."),
+                        )
+                      : Text("Log in"),
                   decoration: ShapeDecoration(
                     color: blueColor,
                     shape: RoundedRectangleBorder(
@@ -89,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           builder: (_) => SignUpScreen(),
                         ),
                       );
+                      clearTextField();
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 8),
