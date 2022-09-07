@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:social_media_app/resources/auth_method.dart';
+import 'package:social_media_app/responsive/mobile_screen_layout.dart';
+import 'package:social_media_app/responsive/responsive_layout_screen.dart';
+import 'package:social_media_app/responsive/web_screen_layout.dart';
 import 'package:social_media_app/screens/signup_screen.dart';
 import 'package:social_media_app/utils/colors.dart';
 import 'package:social_media_app/utils/utils.dart';
@@ -21,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
 
-  clearTextField(){
+  clearTextField() {
     _emailController.clear();
     _passwordController.clear();
   }
@@ -37,13 +40,30 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (result != 'success') {
       Fluttertoast.showToast(msg: result);
-    }
-    else{
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResponsiveLayout(
+            webScreenLayout: WebScreenLayout(),
+            mobileScreenLayout: MobileScreenLayout(),
+          ),
+        ),
+      );
       clearTextField();
     }
     setState(() {
       _isLoading = false;
     });
+  }
+
+  void navigateToSignup() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SignUpScreen(),
+      ),
+    );
   }
 
   @override
@@ -116,12 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => SignUpScreen(),
-                        ),
-                      );
+                      navigateToSignup();
                       clearTextField();
                     },
                     child: Container(

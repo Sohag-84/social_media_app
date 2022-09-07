@@ -7,6 +7,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_media_app/resources/auth_method.dart';
+import 'package:social_media_app/responsive/mobile_screen_layout.dart';
+import 'package:social_media_app/responsive/responsive_layout_screen.dart';
+import 'package:social_media_app/responsive/web_screen_layout.dart';
 import 'package:social_media_app/utils/colors.dart';
 import 'package:social_media_app/utils/utils.dart';
 import 'package:social_media_app/widgets/text_field.dart';
@@ -54,6 +57,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (result != 'success') {
       //showSnackBar(result, context);
       Fluttertoast.showToast(msg: result);
+    }else{
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResponsiveLayout(
+            webScreenLayout: WebScreenLayout(),
+            mobileScreenLayout: MobileScreenLayout(),
+          ),
+        ),
+      );
     }
   }
 

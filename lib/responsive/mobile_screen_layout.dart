@@ -10,7 +10,7 @@ class MobileScreenLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: LoginScreen(),
+        child: Center(child: Text("This is mobile screen"),),
       ),
     );
   }

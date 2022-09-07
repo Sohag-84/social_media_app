@@ -1,11 +1,14 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:social_media_app/responsive/mobile_screen_layout.dart';
 import 'package:social_media_app/responsive/responsive_layout_screen.dart';
 import 'package:social_media_app/responsive/web_screen_layout.dart';
+import 'package:social_media_app/screens/login_screen.dart';
 import 'package:social_media_app/utils/colors.dart';
 
 void main() async {
@@ -35,9 +38,24 @@ class MyApp extends StatelessWidget {
       title: 'Social app',
       theme: ThemeData.dark()
           .copyWith(scaffoldBackgroundColor: mobileBackgroundColor),
-      home: ResponsiveLayout(
-        webScreenLayout: WebScreeLayout(),
-        mobileScreenLayout: MobileScreenLayout(),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if(snapshot.connectionState == ConnectionState.active){
+            if(snapshot.hasData){
+              return ResponsiveLayout(
+                webScreenLayout: WebScreenLayout(),
+                mobileScreenLayout: MobileScreenLayout(),
+              );
+            }else if(snapshot.hasError){
+              Fluttertoast.showToast(msg: snapshot.error.toString());
+            }
+          }
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return Center(child: CircularProgressIndicator(color: primaryColor,),);
+          }
+          return LoginScreen();
+        },
       ),
     );
   }
