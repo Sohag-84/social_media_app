@@ -9,6 +9,13 @@ class AuthMethod {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  Future<UserModel> getUserDetails() async {
+    User currentUser = _auth.currentUser!;
+    DocumentSnapshot snapshot =
+        await _firestore.collection('users').doc(currentUser.uid).get();
+    return UserModel.userFromSnap(snapshot);
+  }
+
   Future<String> signUpUser(
       {required username,
       required email,
@@ -40,7 +47,10 @@ class AuthMethod {
           following: [],
         );
 
-        await _firestore.collection('users').doc(_credential.user!.uid).set(userModel.toJson());
+        await _firestore
+            .collection('users')
+            .doc(_credential.user!.uid)
+            .set(userModel.toJson());
         result = 'registration successful';
       }
     } on FirebaseAuthException catch (e) {
