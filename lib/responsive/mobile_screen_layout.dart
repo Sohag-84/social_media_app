@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social_media_app/utils/colors.dart';
+import 'package:social_media_app/utils/global_variables.dart';
 
 class MobileScreenLayout extends StatefulWidget {
   const MobileScreenLayout({Key? key}) : super(key: key);
@@ -45,13 +46,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
         physics: NeverScrollableScrollPhysics(),
         onPageChanged: onPageChanged, //for changing selected item color
         controller: pageController,
-        children: [
-          Container(color: Colors.red, child: Text("Hello")),
-          Container(color: Colors.orange, child: Text("Hello world")),
-          Container(color: Colors.blue),
-          Container(color: Colors.grey),
-          Container(color: Colors.green),
-        ],
+        children: homeScreenItem,
       ),
       bottomNavigationBar: CupertinoTabBar(
         backgroundColor: mobileBackgroundColor,
