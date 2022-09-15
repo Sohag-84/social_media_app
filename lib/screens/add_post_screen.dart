@@ -2,12 +2,13 @@
 
 import 'dart:typed_data';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:social_media_app/model/user.dart';
 import 'package:social_media_app/provider/user_provider.dart';
+import 'package:social_media_app/resources/firestore_methods.dart';
 import 'package:social_media_app/utils/colors.dart';
 import 'package:social_media_app/utils/utils.dart';
 
@@ -21,6 +22,40 @@ class AddPostScreen extends StatefulWidget {
 class _AddPostScreenState extends State<AddPostScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   Uint8List? _file;
+
+  bool isLoading = false;
+
+  postImage(String uid, String username, String profileImage) async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      String result = await FirestoreMethods().uploadPost(
+        _descriptionController.text,
+        _file!,
+        uid,
+        username,
+        profileImage,
+      );
+      if(result== 'success'){
+        setState(() {
+          isLoading = false;
+        });
+        clearImage();
+        Fluttertoast.showToast(msg: 'Post uploaded');
+      }else{
+        setState(() {
+          isLoading = false;
+        });
+        Fluttertoast.showToast(msg: result);
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      Fluttertoast.showToast(msg: e.toString());
+    }
+  }
 
   selectImage(BuildContext context) async {
     return showDialog(
@@ -64,6 +99,18 @@ class _AddPostScreenState extends State<AddPostScreen> {
     );
   }
 
+  clearImage(){
+    setState(() {
+      _file = null;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _descriptionController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -84,12 +131,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
               backgroundColor: mobileBackgroundColor,
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
-                onPressed: () {},
+                onPressed: () => clearImage(),
               ),
               title: Text('Post to'),
               actions: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: ()=> postImage(user.uid, user.username, user.photoUrl),
                   child: Text(
                     'Post',
                     style: TextStyle(
@@ -102,6 +149,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
             ),
             body: Column(
               children: [
+                isLoading? LinearProgressIndicator(): Container(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
