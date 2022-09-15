@@ -37,13 +37,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
         username,
         profileImage,
       );
-      if(result== 'success'){
+      if (result == 'success') {
         setState(() {
           isLoading = false;
         });
         clearImage();
         Fluttertoast.showToast(msg: 'Post uploaded');
-      }else{
+      } else {
         setState(() {
           isLoading = false;
         });
@@ -99,7 +99,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
     );
   }
 
-  clearImage(){
+  clearImage() {
     setState(() {
       _file = null;
     });
@@ -136,20 +136,22 @@ class _AddPostScreenState extends State<AddPostScreen> {
               title: Text('Post to'),
               actions: [
                 TextButton(
-                  onPressed: ()=> postImage(user.uid, user.username, user.photoUrl),
+                  onPressed: () =>
+                      postImage(user.uid, user.username, user.photoUrl),
                   child: Text(
                     'Post',
                     style: TextStyle(
-                        color: Colors.blueAccent,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
+                      color: Colors.blueAccent,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
             ),
             body: Column(
               children: [
-                isLoading? LinearProgressIndicator(): Container(),
+                isLoading ? LinearProgressIndicator() : Container(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
