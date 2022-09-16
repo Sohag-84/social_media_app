@@ -1,10 +1,12 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:social_media_app/utils/colors.dart';
 
 class PostCard extends StatelessWidget {
-  const PostCard({Key? key}) : super(key: key);
+  final snap;
+  const PostCard({Key? key, required this.snap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,8 @@ class PostCard extends StatelessWidget {
                 CircleAvatar(
                   radius: 16,
                   backgroundImage: NetworkImage(
-                      'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg'),
+                    snap['profileImage'],
+                  ),
                 ),
                 Expanded(
                   child: Padding(
@@ -35,7 +38,7 @@ class PostCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Sohag",
+                          snap['username'],
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -79,8 +82,8 @@ class PostCard extends StatelessWidget {
               height: height * 0.35,
               width: width,
               child: Image.network(
-                'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
-                fit: BoxFit.cover,
+                snap['postUrl'],
+                //fit: BoxFit.fill,
               ),
             ),
           ),
@@ -108,10 +111,10 @@ class PostCard extends StatelessWidget {
               ),
               Expanded(
                 child: Align(
-                  alignment: Alignment.centerRight,
+                  alignment: Alignment.bottomRight,
                   child: IconButton(
                     onPressed: () {},
-                    icon: Icon(Icons.bookmark),
+                    icon: Icon(Icons.bookmark_border),
                   ),
                 ),
               ),
@@ -125,42 +128,48 @@ class PostCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '1,234 likes',
+                  '${snap['likes'].length} likes',
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.only(top: 6),
+                  padding: EdgeInsets.only(top: 6, right: 6),
                   child: RichText(
                     text: TextSpan(
-                        style: TextStyle(color: primaryColor),
-                        children: [
-                          TextSpan(
-                            text: 'username',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(color: primaryColor),
+                      children: [
+                        TextSpan(
+                          text: snap['username'],
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        //for padding two textSpan
+                        WidgetSpan(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10.0),
                           ),
-                          TextSpan(
-                            text:
-                                '  Hey! This is some description to be replaced',
-                          ),
-                        ]),
+                        ),
+                        TextSpan(
+                          text: snap['description'],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 InkWell(
-                  onTap: (){},
+                  onTap: () {},
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 4),
                     child: Text(
                       'View all 200 comments',
-                      style: TextStyle(color: secondaryColor,fontSize: 10),
+                      style: TextStyle(color: secondaryColor, fontSize: 10),
                     ),
                   ),
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 4),
                   child: Text(
-                    '12/04/222',
-                    style: TextStyle(color: secondaryColor,fontSize: 10),
+                    DateFormat.yMMMd().format(snap['datePublished'].toDate()),
+                    style: TextStyle(color: secondaryColor, fontSize: 10),
                   ),
                 ),
               ],
