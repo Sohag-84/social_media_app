@@ -16,19 +16,42 @@ class FirestoreMethods {
           await StorageMethod().uploadImageToStorage('Post', file, true);
       String postId = const Uuid().v1(); //// Generate a v1 (time-based) id
       PostModel post = PostModel(
-          description: description,
-          uid: uid,
-          username: username,
-          postId: postId,
-          datePublished: DateTime.now(),
-          postUrl: photoUrl,
-          profileImage: profileImage,
-          likes: [],);
-      firestore.collection('posts').doc(postId).set(post.toJson(),);
+        description: description,
+        uid: uid,
+        username: username,
+        postId: postId,
+        datePublished: DateTime.now(),
+        postUrl: photoUrl,
+        profileImage: profileImage,
+        likes: [],
+      );
+      firestore.collection('posts').doc(postId).set(
+            post.toJson(),
+          );
       result = 'success';
     } catch (e) {
       result = e.toString();
     }
     return result;
+  }
+
+  Future<void> likePost({required String postId, required String uid, required List likes}) async {
+    try {
+      if (likes.contains(uid)) {
+       await firestore.collection('posts').doc(postId).update(
+          {
+            'likes': FieldValue.arrayRemove([uid]), // if user already liked then second click user dislike
+          },
+        );
+      }else{
+       await firestore.collection('posts').doc(postId).update(
+          {
+            'likes': FieldValue.arrayUnion([uid]), // if user already doesn't liked then second click user like
+          },
+        );
+      }
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }
