@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:social_media_app/model/post_model.dart';
 import 'package:social_media_app/resources/storage_method.dart';
 import 'package:uuid/uuid.dart';
@@ -35,23 +36,56 @@ class FirestoreMethods {
     return result;
   }
 
-  Future<void> likePost({required String postId, required String uid, required List likes}) async {
+  Future<void> likePost(
+      {required String postId,
+      required String uid,
+      required List likes}) async {
     try {
       if (likes.contains(uid)) {
-       await firestore.collection('posts').doc(postId).update(
+        await firestore.collection('posts').doc(postId).update(
           {
-            'likes': FieldValue.arrayRemove([uid]), // if user already liked then second click user dislike
+            'likes': FieldValue.arrayRemove(
+                [uid]), // if user already liked then second click user dislike
           },
         );
-      }else{
-       await firestore.collection('posts').doc(postId).update(
+      } else {
+        await firestore.collection('posts').doc(postId).update(
           {
-            'likes': FieldValue.arrayUnion([uid]), // if user already doesn't liked then second click user like
+            'likes': FieldValue.arrayUnion([
+              uid
+            ]), // if user already doesn't liked then second click user like
           },
         );
       }
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  Future<void> postComment(
+      {required String postId,
+      required String text,
+      required String uid,
+      required String name,
+      required String profilePic}) async {
+    try{
+      if(text.isNotEmpty){
+        String commentId = Uuid().v1();
+        await firestore.collection('posts').doc(postId).collection('comments').doc(commentId).set({
+          'profilePic': profilePic,
+          'name': name,
+          'uid': uid,
+          'text': text,
+          'commentId': commentId,
+          'datePublished': DateTime.now()
+        },);
+        Fluttertoast.showToast(msg: 'Comment done');
+      }else{
+        Fluttertoast.showToast(msg: 'Text field is empty');
+      }
+    }
+    catch (e){
+      Fluttertoast.showToast(msg: 'Something is wrong');
     }
   }
 }
