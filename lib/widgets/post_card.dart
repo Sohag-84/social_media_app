@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:social_media_app/model/user.dart';
 import 'package:social_media_app/provider/user_provider.dart';
 import 'package:social_media_app/resources/firestore_methods.dart';
+import 'package:social_media_app/screens/comments_screen.dart';
 import 'package:social_media_app/utils/colors.dart';
 import 'package:social_media_app/widgets/like_animation.dart';
 
@@ -162,7 +163,12 @@ class _PostCardState extends State<PostCard> {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CommentsScreen(),
+                  ),
+                ),
                 icon: Icon(
                   Icons.comment_outlined,
                 ),
