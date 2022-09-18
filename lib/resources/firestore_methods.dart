@@ -88,4 +88,13 @@ class FirestoreMethods {
       Fluttertoast.showToast(msg: 'Something is wrong');
     }
   }
+
+  Future<void> postDelete(String postId) async{
+    try{
+      await firestore.collection('posts').doc(postId).delete();
+      Fluttertoast.showToast(msg: 'Post delete');
+    }catch (e){
+      Fluttertoast.showToast(msg: 'Something is wrong');
+    }
+  }
 }

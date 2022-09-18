@@ -32,7 +32,7 @@ class _PostCardState extends State<PostCard> {
     print("Init state is called");
   }
 
- getComments() async {
+  getComments() async {
     try {
       // QuerySnapshot returned list of comments
       QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -41,7 +41,6 @@ class _PostCardState extends State<PostCard> {
           .collection('comments')
           .get();
       commentLength = snapshot.docs.length;
-
     } catch (e) {
       Fluttertoast.showToast(
         msg: e.toString(),
@@ -101,10 +100,17 @@ class _PostCardState extends State<PostCard> {
                             children: ["Delete"]
                                 .map(
                                   (e) => InkWell(
-                                    onTap: () {},
+                                    onTap: () {
+                                      FirestoreMethods().postDelete(
+                                        widget.snap['postId'],
+                                      );
+                                      Navigator.of(context).pop();
+                                    },
                                     child: Container(
                                       padding: EdgeInsets.symmetric(
-                                          vertical: 12, horizontal: 16),
+                                        vertical: 12,
+                                        horizontal: 16,
+                                      ),
                                       child: Text(e.toString()),
                                     ),
                                   ),
@@ -276,7 +282,6 @@ class _PostCardState extends State<PostCard> {
                     ),
                   ),
                 ),
-
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 4),
                   child: Text(
