@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class CommentCard extends StatefulWidget {
-  const CommentCard({Key? key}) : super(key: key);
+  final snap;
+  const CommentCard({Key? key, required this.snap}) : super(key: key);
 
   @override
   State<CommentCard> createState() => _CommentCardState();
@@ -18,7 +20,7 @@ class _CommentCardState extends State<CommentCard> {
         children: [
           CircleAvatar(
             backgroundImage: NetworkImage(
-              'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
+              widget.snap['profilePic'],
             ),
             radius: 18,
           ),
@@ -28,28 +30,37 @@ class _CommentCardState extends State<CommentCard> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'username',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      // add a space between texts
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                        ),
-                      ),
-                      TextSpan(text: 'some description insert here'),
-                    ],
-                  ),
+                Text(
+                  widget.snap['name'],
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
+                Text(
+                  widget.snap['text'],
+                ),
+                // RichText(
+                //   text: TextSpan(
+                //     children: [
+                //       TextSpan(
+                //         text: widget.snap['name'],
+                //         style: TextStyle(fontWeight: FontWeight.bold),
+                //       ),
+                //       // add a space between texts
+                //       WidgetSpan(
+                //         child: Padding(
+                //           padding: const EdgeInsets.only(left: 10.0),
+                //         ),
+                //       ),
+                //       TextSpan(text: widget.snap['text']),
+                //     ],
+                //   ),
+                // ),
                 //for date
                 Padding(
                   padding: EdgeInsets.only(top: 5),
                   child: Text(
-                    '25/09/2022',
+                    DateFormat.yMMMd().format(
+                      widget.snap['datePublished'].toDate(),
+                    ),
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
                   ),
                 ),

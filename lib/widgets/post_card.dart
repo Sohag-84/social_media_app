@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:social_media_app/model/user.dart';
@@ -20,6 +22,33 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   bool isLikeAnimating = false;
+
+  int commentLength = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getComments();
+    print("Init state is called");
+  }
+
+ getComments() async {
+    try {
+      // QuerySnapshot returned list of comments
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(widget.snap['postId'])
+          .collection('comments')
+          .get();
+      commentLength = snapshot.docs.length;
+
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: e.toString(),
+      );
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +221,7 @@ class _PostCardState extends State<PostCard> {
               ),
             ],
           ),
-          //description and number of columns
+          //description and number of comments
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
@@ -228,15 +257,26 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => CommentsScreen(
+                          snap: widget.snap,
+                        ),
+                      ),
+                    );
+                  },
+                  //${widget.snap['likes'].length}
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 4),
                     child: Text(
-                      'View all 200 comments',
+                      'View all ${commentLength} comments',
                       style: TextStyle(color: secondaryColor, fontSize: 10),
                     ),
                   ),
                 ),
+
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 4),
                   child: Text(
