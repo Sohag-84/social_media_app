@@ -136,8 +136,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
               title: Text('Post to'),
               actions: [
                 TextButton(
-                  onPressed: () =>
-                      postImage(user.uid, user.username, user.photoUrl),
+                  onPressed: () {
+                    postImage(user.uid, user.username, user.photoUrl);
+                    _descriptionController.clear();
+                  },
                   child: Text(
                     'Post',
                     style: TextStyle(
